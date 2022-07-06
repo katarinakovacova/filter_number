@@ -30,7 +30,7 @@ public class FilterNumbers {
         return output.stream().map(Object::toString).collect(Collectors.joining(" "));
     }
     
-    public static void main (String[] args) {
+    public static void main (String[] args) throws IOException {
         String input = new String();
         if (args.length == 0) {
             System.err.println("Missing required argument (positive integer or path to file)");
@@ -40,52 +40,32 @@ public class FilterNumbers {
                 int n = Integer.parseInt(args[0]);
                 if (n > 0) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    try {
-                        input = br.readLine();
-                    } catch (IOException ioe) {
-                        System.err.println(ioe);
-                        System.exit(1);
-                    }
+                    input = br.readLine();
 
                     String output = filterElements(input);
 
                     if (args.length == 1) {
                         System.out.println(output);
                     } else {
-                        try {
-                            BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]));
-                            bw.write(output);
-                            bw.close();
-                        } catch (IOException ioe) {
-                            System.err.println(ioe);
-                            System.exit(1);
-                        }
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]));
+                        bw.write(output);
+                        bw.close();
                     }
                 } else {
                     System.err.println("Expected positive integer, given: " +n);
                     System.exit(1);
                 }
             } catch (NumberFormatException nfe) {
-                try {
-                    input = new String(Files.readAllBytes(Paths.get(args[0])));
-                } catch (IOException ioe) {
-                    System.err.println(ioe);
-                    System.exit(1);
-                }
+                input = new String(Files.readAllBytes(Paths.get(args[0])));
                 
                 String output = filterElements(input.strip());
 
                 if (args.length == 1) {
                     System.out.println(output);
                 } else {
-                    try {
-                        BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]));
-                        bw.write(output);
-                        bw.close();
-                    } catch (IOException ioe) {
-                        System.err.println(ioe);
-                        System.exit(1);
-                    }
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]));
+                    bw.write(output);
+                    bw.close();
                 }
             }
         } 
