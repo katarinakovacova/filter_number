@@ -29,9 +29,19 @@ public class FilterNumbers {
 
         return output.stream().map(Object::toString).collect(Collectors.joining(" "));
     }
+
+    private static String readStringFromSystemIn () throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        return br.readLine();
+    }
+
+    private static void writeStringToFile (String path, String text) throws IOException{
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+        bw.write(text);
+        bw.close();
+    }
     
     public static void main (String[] args) throws IOException {
-        String input = new String();
         if (args.length == 0) {
             System.err.println("Missing required argument (positive integer or path to file)");
             System.exit(1);
@@ -39,33 +49,27 @@ public class FilterNumbers {
             try {
                 int n = Integer.parseInt(args[0]);
                 if (n > 0) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    input = br.readLine();
-
+                    String input = readStringFromSystemIn();
                     String output = filterElements(input);
 
                     if (args.length == 1) {
                         System.out.println(output);
                     } else {
-                        BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]));
-                        bw.write(output);
-                        bw.close();
+                        writeStringToFile(args[1], output);
                     }
                 } else {
                     System.err.println("Expected positive integer, given: " +n);
                     System.exit(1);
                 }
             } catch (NumberFormatException nfe) {
-                input = new String(Files.readAllBytes(Paths.get(args[0])));
+                String input = new String(Files.readAllBytes(Paths.get(args[0])));
                 
                 String output = filterElements(input.strip());
 
                 if (args.length == 1) {
                     System.out.println(output);
                 } else {
-                    BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]));
-                    bw.write(output);
-                    bw.close();
+                    writeStringToFile(args[1], output);
                 }
             }
         } 
